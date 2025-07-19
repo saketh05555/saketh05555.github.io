@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Name - Student Portfolio</title>
+    <title>Saketh - Student Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,14 +11,16 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Light background */
-            color: #333;
+            background-color: #0A1A1A; /* Dark background inspired by example */
+            color: #e2e8f0; /* Light text */
+            overflow-x: hidden; /* Prevent horizontal scroll on small movements */
         }
         .section-heading {
             position: relative;
             display: inline-block;
             padding-bottom: 0.5rem;
             margin-bottom: 2rem;
+            color: #ffffff; /* White heading text */
         }
         .section-heading::after {
             content: '';
@@ -37,11 +39,96 @@
             color: #4FD1C5; /* Accent color on hover */
         }
         .project-card {
+            /* Updated background to match the gradient style */
+            background-image: linear-gradient(to bottom, #0F3A3A, #0A1A1A); /* Darker teal to black gradient */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(79, 209, 197, 0.2); /* Subtle accent border */
         }
         .project-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        .grid-background {
+            background-color: #0A1A1A;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        /* Styles for the Three.js canvas - Adjusted for direct placement */
+        #hero-canvas {
+            width: 100%;
+            height: 100%;
+            display: block; /* Ensure it takes up space */
+            background-color: transparent; /* Ensure canvas background is transparent */
+        }
+        /* New overlay for hero content to ensure readability */
+        .hero-content-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.4); /* Slightly more transparent black overlay */
+            z-index: 10; /* Ensure it's above the canvas */
+        }
+        /* Animation for hero text */
+        @keyframes fadeInScaleUp {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInScaleUp 0.8s ease-out forwards;
+        }
+        .animation-delay-300 {
+            animation-delay: 0.3s;
+        }
+        .animation-delay-600 {
+            animation-delay: 0.6s;
+        }
+
+        /* Specific style to make grid lines fade away in the contact section */
+        #contact.grid-background {
+            background-image:
+                linear-gradient(to bottom, rgba(10, 26, 26, 0) 0%, rgba(10, 26, 26, 1) 100%), /* Fade layer */
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), /* Vertical grid lines */
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px); /* Horizontal grid lines */
+            background-size:
+                100% 100%, /* Fade layer covers the whole element */
+                30px 30px, /* Grid lines repeat */
+                30px 30px;
+            background-repeat: no-repeat, repeat, repeat; /* Fade layer doesn't repeat */
+        }
+
+        /* Message box for form submission feedback */
+        .message-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50; /* Green for success */
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .message-box.show {
+            opacity: 1;
+        }
+        .message-box.error {
+            background-color: #f44336; /* Red for error */
         }
     </style>
 </head>
@@ -49,54 +136,62 @@
 
     <div class="min-h-screen flex flex-col">
         <!-- Navbar -->
-        <nav class="bg-white shadow-sm py-4 sticky top-0 z-50">
-            <div class="container mx-auto px-4 flex justify-between items-center">
-                <a href="#hero" class="text-2xl font-bold text-gray-900">SAKETH</a>
+        <nav class="bg-[#0A1A1A]/80 backdrop-blur-sm shadow-lg py-3 md:py-4 fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] xl:w-[calc(100%-8rem)] rounded-full z-50 border border-gray-700">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <a href="#hero" class="text-2xl font-bold text-white flex flex-col items-center">
+                    SAKETH
+                    <span class="text-teal-400 text-base font-normal">PORTFOLIO</span>
+                </a>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 font-medium">About</a>
-                    <a href="#skills" class="nav-link text-gray-700 hover:text-gray-900 font-medium">Skills</a>
-                    <a href="#projects" class="nav-link text-gray-700 hover:text-gray-900 font-medium">Projects</a>
-                    <a href="#contact" class="nav-link text-gray-700 hover:text-gray-900 font-medium">Contact</a>
+                    <a href="#about" class="nav-link text-gray-300 hover:text-white font-medium text-sm md:text-base">About</a>
+                    <a href="#skills" class="nav-link text-gray-300 hover:text-white font-medium text-sm md:text-base">Skills</a>
+                    <a href="#projects" class="nav-link text-gray-300 hover:text-white font-medium text-sm md:text-base">Projects</a>
+                    <a href="#contact" class="nav-link text-gray-300 hover:text-white font-medium text-sm md:text-base">Contact</a>
                 </div>
                 <!-- Mobile Menu Button -->
-                <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <button id="mobile-menu-button" class="md:hidden text-gray-300 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
             </div>
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden bg-white px-4 pt-2 pb-4 space-y-2">
-                <a href="#about" class="block text-gray-700 hover:text-gray-900 font-medium">About</a>
-                <a href="#skills" class="block text-gray-700 hover:text-gray-900 font-medium">Skills</a>
-                <a href="#projects" class="block text-gray-700 hover:text-gray-900 font-medium">Projects</a>
-                <a href="#contact" class="block text-gray-700 hover:text-gray-900 font-medium">Contact</a>
+            <div id="mobile-menu" class="hidden md:hidden bg-[#0A1A1A]/80 px-4 pt-2 pb-4 space-y-2 rounded-b-xl">
+                <a href="#about" class="block text-gray-300 hover:text-white font-medium">About</a>
+                <a href="#skills" class="block text-gray-300 hover:text-white font-medium">Skills</a>
+                <a href="#projects" class="block text-gray-300 hover:text-white font-medium">Projects</a>
+                <a href="#contact" class="block text-gray-300 hover:text-white font-medium">Contact</a>
             </div>
         </nav>
 
         <main class="flex-grow">
             <!-- Hero Section -->
-            <section id="hero" class="relative bg-gradient-to-r from-teal-500 to-cyan-600 text-white py-20 md:py-32 flex items-center justify-center text-center">
-                <div class="container mx-auto px-4">
-                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up">
-                        Hi, I'm <span class="text-white">Saketh Sai</span>
-                    </h1>
-                    <p class="text-xl md:text-2xl mb-8 animate-fade-in-up animation-delay-300">
-                        A passionate <span class="font-semibold">Student Developer</span> with a keen interest in <span class="font-semibold">exploring various domains</span>.
-                    </p>
-                    <a href="#projects" class="inline-block bg-white text-teal-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 transition duration-300 animate-fade-in-up animation-delay-600">
-                        View My Work
-                    </a>
+            <section id="hero" class="relative bg-gradient-to-b from-[#051010] to-[#0A1A1A] text-white pt-40 pb-20 md:pb-32 flex flex-col items-center justify-center text-center overflow-hidden min-h-[60vh]">
+                <!-- Canvas is now directly inside, taking up space -->
+                <canvas id="hero-canvas"></canvas>
+                <!-- Overlay for content to ensure readability -->
+                <div class="hero-content-overlay">
+                    <div class="container mx-auto px-4 relative z-10">
+                        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up">
+                            Hi, I'm <span class="text-teal-400">Saketh Sai</span>
+                        </h1>
+                        <p class="text-xl md:text-2xl mb-8 animate-fade-in-up animation-delay-300">
+                            A passionate <span class="font-semibold text-teal-300">Student Developer</span> with a keen interest in <span class="font-semibold text-teal-300">exploring various domains</span>.
+                        </p>
+                        <a href="#projects" class="inline-block bg-teal-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-teal-700 transition duration-300 animate-fade-in-up animation-delay-600">
+                            View My Work
+                        </a>
+                    </div>
                 </div>
             </section>
 
             <!-- About Section -->
-            <section id="about" class="py-16 md:py-24 bg-gray-50">
+            <section id="about" class="py-16 md:py-24 grid-background">
                 <div class="container mx-auto px-4">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center section-heading mx-auto">About Me</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center section-heading mx-auto">About Me</h2>
                     <div class="flex flex-col md:flex-row items-center md:space-x-12">
                         <div class="md:w-1/3 mb-8 md:mb-0">
-                            <img src="https://placehold.co/400x400/E0F2F7/26A69A?text=Your+Photo" alt="Your Photo" class="rounded-full w-48 h-48 md:w-64 md:h-64 object-cover mx-auto shadow-lg border-4 border-white">
+                            <img src="https://placehold.co/400x400/26A69A/E0F2F7?text=Your+Photo" alt="Your Photo" class="rounded-full w-48 h-48 md:w-64 md:h-64 object-cover mx-auto shadow-lg border-4 border-teal-700">
                         </div>
-                        <div class="md:w-2/3 text-lg text-gray-700 leading-relaxed">
+                        <div class="md:w-2/3 text-lg text-gray-300 leading-relaxed bg-gradient-to-b from-teal-900 to-black p-6 rounded-lg shadow-md border border-gray-700">
                             <p class="mb-4">
                                 I am a second-year Computer Science student at Dayanand sagar university, specializing in full-stack web development. My academic journey has equipped me with a strong foundation in data structures, algorithms, and software engineering principles. I am constantly seeking opportunities to apply my knowledge to real-world problems and build impactful solutions.
                             </p>
@@ -114,22 +209,41 @@
             <!-- Skills Section -->
             <section id="skills" class="py-16 md:py-24">
                 <div class="container mx-auto px-4">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center section-heading mx-auto">My Skills</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center section-heading mx-auto">My Skills</h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-                        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="bg-gradient-to-b from-teal-900 to-black p-6 rounded-lg shadow-md text-center border border-teal-700">
                             <div class="text-4xl mb-3">💻</div>
-                            <h3 class="text-xl font-semibold mb-2">Programming Languages</h3>
-                            <ul class="text-gray-700 text-sm">
+                            <h3 class="text-xl font-semibold mb-2 text-white">Programming Languages</h3>
+                            <ul class="text-gray-300 text-sm">
                                 <li>Python</li>
                                 <li>Java</li>
                                 <li>C++</li>
                             </ul>
-       
                         </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="bg-gradient-to-b from-teal-900 to-black p-6 rounded-lg shadow-md text-center border border-teal-700">
+                            <div class="text-4xl mb-3">🌐</div>
+                            <h3 class="text-xl font-semibold mb-2 text-white">Frontend Development</h3>
+                            <ul class="text-gray-300 text-sm">
+                                <li>HTML5 & CSS3</li>
+                                <li>JavaScript (ES6+)</li>
+                                <li>React.js</li>
+                                <li>Tailwind CSS</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-b from-teal-900 to-black p-6 rounded-lg shadow-md text-center border border-teal-700">
+                            <div class="text-4xl mb-3">🗄️</div>
+                            <h3 class="text-xl font-semibold mb-2 text-white">Backend Development</h3>
+                            <ul class="text-gray-300 text-sm">
+                                <li>Node.js (Express)</li>
+                                <li>Python (Django/Flask)</li>
+                                <li>RESTful APIs</li>
+                                <li>SQL (PostgreSQL, MySQL)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-b from-teal-900 to-black p-6 rounded-lg shadow-md text-center border border-teal-700">
                             <div class="text-4xl mb-3">🎬</div>
-                            <h3 class="text-xl font-semibold mb-2">Editing</h3>
-                            <ul class="text-gray-700 text-sm">
+                            <h3 class="text-xl font-semibold mb-2 text-white">Editing</h3>
+                            <ul class="text-gray-300 text-sm">
                                 <li>Image</li>
                                 <li>Video</li>
                             </ul>
@@ -139,62 +253,62 @@
             </section>
 
             <!-- Projects Section -->
-            <section id="projects" class="py-16 md:py-24 bg-gray-50">
+            <section id="projects" class="py-16 md:py-24 grid-background">
                 <div class="container mx-auto px-4">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center section-heading mx-auto">My Projects</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center section-heading mx-auto">My Projects</h2>
                     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <!-- Project 1 -->
-                        <div class="project-card bg-white rounded-lg shadow-md overflow-hidden">
-                            <img src="https://placehold.co/600x400/A7D9E0/333?text=Project+1" alt="Project 1" class="w-full h-48 object-cover">
+                        <div class="project-card rounded-lg shadow-md overflow-hidden">
+                            <img src="https://placehold.co/600x400/333/A7D9E0?text=Project+1" alt="Project 1" class="w-full h-48 object-cover">
                             <div class="p-6">
-                                <h3 class="text-xl font-semibold mb-2 text-gray-900">Project Title One</h3>
-                                <p class="text-gray-700 text-sm mb-4">
+                                <h3 class="text-xl font-semibold mb-2 text-white">Project Title One</h3>
+                                <p class="text-gray-300 text-sm mb-4">
                                     A brief description of Project One, highlighting its purpose, key features, and technologies used. This could be a web application for task management.
                                 </p>
                                 <div class="flex flex-wrap gap-2 mb-4">
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">React.js</span>
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Node.js</span>
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">MongoDB</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">React.js</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">Node.js</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">MongoDB</span>
                                 </div>
-                                <a href="#" class="text-teal-600 hover:text-teal-800 font-semibold text-sm inline-flex items-center">
+                                <a href="#" class="text-teal-400 hover:text-teal-200 font-semibold text-sm inline-flex items-center">
                                     View Project
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.25 10.5L21 14.25M21 14.25L17.25 18M21 14.25H3"></path></svg>
                                 </a>
                             </div>
                         </div>
                         <!-- Project 2 -->
-                        <div class="project-card bg-white rounded-lg shadow-md overflow-hidden">
-                            <img src="https://placehold.co/600x400/D0E8F2/333?text=Project+2" alt="Project 2" class="w-full h-48 object-cover">
+                        <div class="project-card rounded-lg shadow-md overflow-hidden">
+                            <img src="https://placehold.co/600x400/333/D0E8F2?text=Project+2" alt="Project 2" class="w-full h-48 object-cover">
                             <div class="p-6">
-                                <h3 class="text-xl font-semibold mb-2 text-gray-900">Project Title Two</h3>
-                                <p class="text-gray-700 text-sm mb-4">
+                                <h3 class="text-xl font-semibold mb-2 text-white">Project Title Two</h3>
+                                <p class="text-gray-300 text-sm mb-4">
                                     A brief description of Project Two, focusing on a data visualization tool built using Python and D3.js (or Chart.js for canvas).
                                 </p>
                                 <div class="flex flex-wrap gap-2 mb-4">
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Python</span>
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Flask</span>
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Chart.js</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">Python</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">Flask</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">Chart.js</span>
                                 </div>
-                                <a href="#" class="text-teal-600 hover:text-teal-800 font-semibold text-sm inline-flex items-center">
+                                <a href="#" class="text-teal-400 hover:text-teal-200 font-semibold text-sm inline-flex items-center">
                                     View Project
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.25 10.5L21 14.25M21 14.25L17.25 18M21 14.25H3"></path></svg>
                                 </a>
                             </div>
                         </div>
                         <!-- Project 3 -->
-                        <div class="project-card bg-white rounded-lg shadow-md overflow-hidden">
-                            <img src="https://placehold.co/600x400/C1E5EC/333?text=Project+3" alt="Project 3" class="w-full h-48 object-cover">
+                        <div class="project-card rounded-lg shadow-md overflow-hidden">
+                            <img src="https://placehold.co/600x400/333/C1E5EC?text=Project+3" alt="Project 3" class="w-full h-48 object-cover">
                             <div class="p-6">
-                                <h3 class="text-xl font-semibold mb-2 text-gray-900">Project Title Three</h3>
-                                <p class="text-gray-700 text-sm mb-4">
+                                <h3 class="text-xl font-semibold mb-2 text-white">Project Title Three</h3>
+                                <p class="text-gray-300 text-sm mb-4">
                                     A brief description of Project Three, perhaps an e-commerce platform prototype or a mobile application concept.
                                 </p>
                                 <div class="flex flex-wrap gap-2 mb-4">
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">HTML</span>
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">CSS</span>
-                                    <span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">JavaScript</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">HTML</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">CSS</span>
+                                    <span class="bg-teal-700 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">JavaScript</span>
                                 </div>
-                                <a href="#" class="text-teal-600 hover:text-teal-800 font-semibold text-sm inline-flex items-center">
+                                <a href="#" class="text-teal-400 hover:text-teal-200 font-semibold text-sm inline-flex items-center">
                                     View Project
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.25 10.5L21 14.25M21 14.25L17.25 18M21 14.25H3"></path></svg>
                                 </a>
@@ -205,27 +319,27 @@
             </section>
 
             <!-- Contact Section -->
-            <section id="contact" class="py-16 md:py-24 bg-white">
+            <section id="contact" class="py-16 md:py-24 grid-background">
                 <div class="container mx-auto px-4 max-w-2xl">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center section-heading mx-auto">Get In Touch</h2>
-                    <p class="text-lg text-gray-700 mb-8 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center section-heading mx-auto">Get In Touch</h2>
+                    <p class="text-lg text-gray-300 mb-8 text-center">
                         I'm always open to discussing new projects, collaborations, or opportunities. Feel free to reach out!
                     </p>
-                    <form class="space-y-6">
+                    <form id="contactForm" action="https://formspree.io/f/yourformid" method="POST" class="space-y-6">
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                            <input type="text" id="name" name="name" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Your Name">
+                            <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                            <input type="text" id="name" name="name" class="mt-1 block w-full px-4 py-2 border border-gray-700 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm bg-gray-900 text-white" placeholder="Your Name" required>
                         </div>
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <input type="email" id="email" name="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="your.email@example.com">
+                            <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                            <input type="email" id="email" name="email" class="mt-1 block w-full px-4 py-2 border border-gray-700 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm bg-gray-900 text-white" placeholder="your.email@example.com" required>
                         </div>
                         <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                            <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Your message..."></textarea>
+                            <label for="message" class="block text-sm font-medium text-gray-300 mb-1">Message</label>
+                            <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-4 py-2 border border-gray-700 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm bg-gray-900 text-white" placeholder="Your message..." required></textarea>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300">
+                            <button type="submit" id="submitButton" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300">
                                 Send Message
                                 <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </button>
@@ -236,22 +350,281 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
+        <footer class="text-white py-8" style="background-color: #0A1A1A;">
             <div class="container mx-auto px-4 text-center text-sm">
                 <p>&copy; 2025 Saketh. All rights reserved.</p>
                 <div class="mt-4 flex justify-center space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">LinkedIn</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">GitHub</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">Twitter</a>
+                    <a href="https://www.linkedin.com/in/saketh-p-5483ab321/" target="_blank" class="text-gray-400 hover:text-white transition duration-300">LinkedIn</a>
+                    <a href="https://github.com/saketh05555" target="_blank" class="text-gray-400 hover:text-white transition duration-300">GitHub</a>
                 </div>
             </div>
         </footer>
     </div>
 
+    <!-- Message Box Element -->
+    <div id="messageBox" class="message-box"></div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+        console.log("Script block started."); // Added very early log
+
+        // Three.js Animation for Hero Section
+        const heroCanvas = document.getElementById('hero-canvas');
+        let heroScene, heroCamera, heroRenderer;
+        let floatingIcons = [];
+        let dispersedParticles = []; // Array to hold temporary dispersed particles
+
+        const initHeroAnimation = () => {
+            console.log('Initializing Three.js animation...');
+            const heroSection = document.getElementById('hero');
+
+            // Scene
+            heroScene = new THREE.Scene();
+            heroScene.background = null; // Ensure scene background is null for transparency
+            console.log('Scene created:', heroScene);
+
+            // Camera
+            heroCamera = new THREE.PerspectiveCamera(75, heroSection.clientWidth / heroSection.clientHeight, 0.1, 1000);
+            heroCamera.position.set(0, 0, 250); // Adjusted camera position for floating icons
+            heroCamera.lookAt(0, 0, 0); // Look at the center of the scene
+            console.log('Camera created:', heroCamera);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Soft white light
+            heroScene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // Directional light for definition
+            directionalLight.position.set(100, 150, 100);
+            heroScene.add(directionalLight);
+            console.log('Lights added to scene.');
+
+            // Renderer
+            heroRenderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true, alpha: true });
+            heroRenderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
+            heroRenderer.setPixelRatio(window.devicePixelRatio);
+            heroRenderer.setClearColor(0x000000, 0); // Explicitly set clear color to transparent black
+            console.log('Renderer created:', heroRenderer);
+
+            // Explicitly set canvas dimensions (important for initial render)
+            heroCanvas.width = heroSection.clientWidth;
+            heroCanvas.height = heroSection.clientHeight;
+            console.log('Hero canvas dimensions:', heroCanvas.width, 'x', heroCanvas.height);
+
+            // Subtle Background Grid
+            const gridHelper = new THREE.GridHelper(500, 50, 0x004d40, 0x004d40); // Dark teal lines
+            gridHelper.material.transparent = true;
+            gridHelper.material.opacity = 0.1; // Very subtle
+            gridHelper.position.y = -150; // Place it below the icons
+            heroScene.add(gridHelper);
+            console.log('Background GridHelper added.');
+
+            // --- Floating Development Tool Icons ---
+            const iconColors = [0x4FD1C5, 0x81E6D9, 0x38B2AC, 0x2C7A7B, 0x0C4B4B]; // Various teal shades
+
+            const createIcon = (geometry, position, speed, amplitude, color) => {
+                const material = new THREE.MeshPhongMaterial({ color: color, transparent: true, opacity: 0.7 });
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(position.x, position.y, position.z);
+                return { mesh, speed, amplitude, originalPosition: position.clone(), isDispersed: false, respawnTime: 0, dispersedMesh: null };
+            };
+
+            // Code Icon (Cube)
+            floatingIcons.push(createIcon(new THREE.BoxGeometry(30, 30, 30), new THREE.Vector3(-150, 80, 0), 0.005, 30, iconColors[0]));
+            // Database Icon (Cylinder)
+            floatingIcons.push(createIcon(new THREE.CylinderGeometry(20, 20, 30, 32), new THREE.Vector3(120, -70, 0), 0.007, 25, iconColors[1]));
+            // Framework/Structure Icon (Tetrahedron)
+            floatingIcons.push(createIcon(new THREE.TetrahedronGeometry(30, 0), new THREE.Vector3(0, 100, -50), 0.006, 28, iconColors[2]));
+            // Cloud/Service Icon (Dodecahedron)
+            floatingIcons.push(createIcon(new THREE.DodecahedronGeometry(25), new THREE.Vector3(-100, -100, 50), 0.004, 35, iconColors[3]));
+            // Networking/Connections Icon (Torus)
+            floatingIcons.push(createIcon(new THREE.TorusGeometry(20, 8, 16, 100), new THREE.Vector3(180, 50, -20), 0.008, 20, iconColors[4]));
+
+            floatingIcons.forEach(icon => heroScene.add(icon.mesh)); // Add all initial icons to scene
+            console.log('Floating icons added to scene.');
+
+            // Add mouse interaction for hero animation
+            document.addEventListener('mousemove', onHeroMouseMove);
+            window.addEventListener('resize', onHeroWindowResize);
+            heroCanvas.addEventListener('click', onHeroCanvasClick); // Listener on heroCanvas
+            console.log('Event listeners updated.');
+        };
+
+        let heroMouseX = 0, heroMouseY = 0;
+        const onHeroMouseMove = (event) => {
+            // Normalize mouse coordinates to -1 to +1 range
+            heroMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            heroMouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        };
+
+        const onHeroWindowResize = () => {
+            const heroSection = document.getElementById('hero');
+            heroCamera.aspect = heroSection.clientWidth / heroSection.clientHeight;
+            heroCamera.updateProjectionMatrix();
+            heroRenderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
+            heroCanvas.width = heroSection.clientWidth;
+            heroCanvas.height = heroSection.clientHeight;
+            console.log('Window resized. Hero canvas dimensions:', heroCanvas.width, 'x', heroCanvas.height);
+        };
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        const onHeroCanvasClick = (event) => {
+            // Calculate mouse position in normalized device coordinates (-1 to +1)
+            const rect = heroCanvas.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, heroCamera);
+
+            const intersects = raycaster.intersectObjects(heroScene.children);
+
+            for (let i = 0; i < intersects.length; i++) {
+                const clickedMesh = intersects[i].object;
+                const icon = floatingIcons.find(fIcon => fIcon.mesh === clickedMesh);
+
+                if (icon && !icon.isDispersed) {
+                    icon.isDispersed = true;
+                    heroScene.remove(icon.mesh); // Remove original icon
+
+                    // Create dispersed particles
+                    const dispersionCount = 50;
+                    const dispersionGeometry = new THREE.BufferGeometry();
+                    const dispersionPositions = [];
+                    const dispersionVelocities = [];
+                    const dispersionLifespans = [];
+
+                    const particleColor = icon.mesh.material.color;
+
+                    for (let j = 0; j < dispersionCount; j++) {
+                        dispersionPositions.push(icon.mesh.position.x, icon.mesh.position.y, icon.mesh.position.z);
+                        dispersionVelocities.push(
+                            (Math.random() - 0.5) * 20, // Increased dispersion speed
+                            (Math.random() - 0.5) * 20,
+                            (Math.random() - 0.5) * 20
+                        );
+                        dispersionLifespans.push(Math.random() * 60 + 60); // Lifespan 60-120 frames
+                    }
+
+                    dispersionGeometry.setAttribute('position', new THREE.Float32BufferAttribute(dispersionPositions, 3));
+                    
+                    const dispersionMaterial = new THREE.PointsMaterial({
+                        size: 3, // Size of dispersed particles
+                        color: particleColor,
+                        blending: THREE.AdditiveBlending,
+                        transparent: true,
+                        opacity: 1,
+                        sizeAttenuation: true
+                    });
+
+                    const dispersedMesh = new THREE.Points(dispersionGeometry, dispersionMaterial);
+                    dispersedMesh.userData = {
+                        velocities: dispersionVelocities,
+                        lifespans: dispersionLifespans,
+                        currentLives: dispersionLifespans.map(l => l),
+                        originalIcon: icon, // Reference back to the original icon data
+                        respawnDelay: 180 // Delay in frames before respawning the icon
+                    };
+                    heroScene.add(dispersedMesh);
+                    dispersedParticles.push(dispersedMesh);
+                    console.log('Icon dispersed!');
+                    break; // Only disperse one icon per click
+                }
+            }
+        };
+
+
+        const animateHero = () => {
+            requestAnimationFrame(animateHero);
+
+            const time = Date.now() * 0.001; // Time for animations
+
+            // Camera movement based on mouse
+            if (heroCamera) {
+                heroCamera.position.x += (heroMouseX * 100 - heroCamera.position.x) * 0.05; // Move camera on X
+                heroCamera.position.y += (heroMouseY * 100 - heroCamera.position.y) * 0.05; // Move camera on Y
+                heroCamera.lookAt(0, 0, 0); // Always look at the center
+            }
+
+            // Animate floating icons (only if not dispersed)
+            floatingIcons.forEach((icon, index) => {
+                if (!icon.isDispersed) {
+                    // Vertical float
+                    icon.mesh.position.y = icon.originalPosition.y + (Math.sin(time * icon.speed + index * 0.5) * icon.amplitude);
+                    // Rotation
+                    icon.mesh.rotation.x += 0.005 + Math.sin(time * 0.001) * 0.001;
+                    icon.mesh.rotation.y += 0.008 + Math.cos(time * 0.001) * 0.001;
+                    icon.mesh.rotation.z += 0.003 + Math.sin(time * 0.002) * 0.001;
+                }
+            });
+
+            // Update and remove dispersed particles
+            for (let i = dispersedParticles.length - 1; i >= 0; i--) {
+                const dParticles = dispersedParticles[i];
+                const dPositions = dParticles.geometry.attributes.position.array;
+                const dVelocities = dParticles.userData.velocities;
+                const dLifespans = dParticles.userData.lifespans;
+                const dCurrentLives = dParticles.userData.currentLives;
+                const originalIcon = dParticles.userData.originalIcon;
+
+                let allDead = true;
+                for (let j = 0; j < dPositions.length; j += 3) {
+                    if (dCurrentLives[j / 3] > 0) {
+                        dPositions[j] += dVelocities[j] * 0.1;
+                        dPositions[j + 1] += dVelocities[j + 1] * 0.1;
+                        dPositions[j + 2] += dVelocities[j + 2] * 0.1;
+                        dCurrentLives[j / 3]--;
+
+                        // Fade out based on remaining life
+                        dParticles.material.opacity = dCurrentLives[j / 3] / dLifespans[j / 3];
+                        allDead = false;
+                    }
+                }
+                dParticles.geometry.attributes.position.needsUpdate = true;
+
+                // Check for respawn delay
+                dParticles.userData.respawnDelay--;
+                if (dParticles.userData.respawnDelay <= 0 && originalIcon.isDispersed) {
+                    originalIcon.isDispersed = false; // Reset flag
+                    // Respawn at a new random position
+                    originalIcon.mesh.position.set(
+                        (Math.random() - 0.5) * 400,
+                        (Math.random() - 0.5) * 300,
+                        (Math.random() - 0.5) * 100
+                    );
+                    originalIcon.originalPosition.copy(originalIcon.mesh.position); // Update original position for new floating path
+                    heroScene.add(originalIcon.mesh); // Add back to scene
+                    console.log('Icon respawned!');
+                }
+
+                if (allDead && dParticles.userData.respawnDelay <= 0) { // Only remove particles after respawn delay
+                    heroScene.remove(dParticles);
+                    dispersedParticles.splice(i, 1);
+                }
+            }
+
+            if (heroRenderer && heroScene && heroCamera) {
+                heroRenderer.render(heroScene, heroCamera);
+            } else {
+                console.warn("Three.js components not fully initialized for rendering.");
+            }
+        };
+
+        // Initialize and start animations when window loads
+        window.onload = function () {
+            console.log("window.onload fired.");
+            initHeroAnimation();
+            onHeroWindowResize(); // Call resize once initially to set correct dimensions
+            animateHero();
+        };
+
+        // General UI setup
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
+            const contactForm = document.getElementById('contactForm');
+            const submitButton = document.getElementById('submitButton');
+            const messageBox = document.getElementById('messageBox');
 
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
@@ -261,15 +634,67 @@
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                    // Close mobile menu after clicking a link
+                    const href = this.getAttribute('href');
+                    if (href && href !== '#') {
+                        document.querySelector(href).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
                     if (!mobileMenu.classList.contains('hidden')) {
                         mobileMenu.classList.add('hidden');
                     }
                 });
             });
+
+            // Formspree submission handling
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+
+                const formData = new FormData(contactForm);
+
+                try {
+                    const response = await fetch(contactForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showMessage('Message sent successfully!', false);
+                        contactForm.reset();
+                    } else {
+                        const data = await response.json();
+                        if (data.errors) {
+                            showMessage(`Error: ${data.errors.map(err => err.message).join(', ')}`, true);
+                        } else {
+                            showMessage('Oops! There was an error sending your message.', true);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Network error:', error);
+                    showMessage('Network error. Please try again later.', true);
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Send Message <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>';
+                }
+            });
+
+            function showMessage(message, isError) {
+                messageBox.textContent = message;
+                messageBox.classList.remove('show', 'error');
+                if (isError) {
+                    messageBox.classList.add('error');
+                }
+                messageBox.classList.add('show');
+
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, 5000);
+            }
         });
     </script>
 </body>
