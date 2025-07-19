@@ -1,4 +1,4 @@
-Your Name - Student Portfolio
+saketh sai - Student Portfolio
 Welcome to my personal student portfolio! This repository hosts the code for my online portfolio website, where I showcase my projects, skills, and academic journey.
 
 About Me
